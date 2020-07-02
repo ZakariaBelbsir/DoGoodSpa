@@ -11,7 +11,6 @@ export const actions = {
     fetchCities({commit}, region_id){
         return axios.get(`/api/cities/${region_id}`)
             .then(response => {
-                console.log(response.data)
                 commit('SET_CITIES', response.data)
             })
             .catch(() => console.log('there was an error fetching cities'))

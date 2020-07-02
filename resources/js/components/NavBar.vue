@@ -28,6 +28,9 @@
                     <v-btn rounded text to="/postes">
                         Postes
                     </v-btn>
+                    <v-btn rounded text :to="{name: 'settings', params: {user: user.name}}">
+                        Parametres
+                    </v-btn>
                     <v-btn rounded text @click="logout">
                         Deconnexion
                     </v-btn>
@@ -91,6 +94,13 @@
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
+                                <v-btn class="white--text"  rounded text :to="{name: 'settings', params: {user: user.name}}">Parametres</v-btn>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link>
+                        <v-list-item-content>
+                            <v-list-item-title>
                                 <v-btn class="white--text"  rounded text @click="logout">Deconnexion</v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
@@ -114,15 +124,15 @@
                 group: null,
                 links:[
                     {label: 'Acceuil', url: '/'},
-                    {label: 'Postes', url:'/posts'},
+                    {label: 'Postes', url:'/postes'},
                     {label: 'Connexion', url: '/login'},
-                    {label: 'Inscription', url: '/register'}
+                    {label: 'Inscription', url: '/register'},
                 ]
             }
         },
 
         computed: {
-            ...mapGetters({'loggedIn' : 'User/loggedIn'})
+            ...mapGetters({'loggedIn' : 'User/loggedIn', 'user' : 'User/getUser'})
         },
 
         watch: {

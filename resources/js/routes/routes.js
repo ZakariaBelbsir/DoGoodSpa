@@ -4,7 +4,8 @@ import Home from '../components/Home';
 import Login from '../components/Login';
 import Register from '../components/Register';
 import Posts from '../components/Posts';
-import Profile from '../components/Profile';
+import Profile from '../components/user/Profile';
+import Settings from '../components/user/Settings';
 
 
 Vue.use(VueRouter);
@@ -38,6 +39,12 @@ const router = new VueRouter({
             name: 'Profile',
             component: Profile,
             meta: {requiresAuth: true}
+        },
+        {
+            path: '/:user/settings',
+            name: 'settings',
+            component: Settings,
+            meta: {requiresAuth: true}
         }
      ]
 });
@@ -47,7 +54,6 @@ router.beforeEach((to, from, next) => {
 
     if(to.matched.some(record => record.meta.requiresAuth) && !loggedIn){
         next('/')
-        location.reload()
     }
     next()
 })

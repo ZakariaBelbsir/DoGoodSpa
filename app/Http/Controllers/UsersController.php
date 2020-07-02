@@ -25,4 +25,9 @@ class UsersController extends Controller
                 'user' => $user->toArray()
             ], 200);
     }
+
+    public function update(User $user)
+    {
+
+    }
 }
