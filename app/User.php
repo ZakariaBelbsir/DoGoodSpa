@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'city_id'
+        'name', 'email', 'password', 'city_id', 'avatar'
     ];
 
     /**
@@ -39,6 +39,8 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    protected $with=['city'];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -52,5 +54,10 @@ class User extends Authenticatable implements JWTSubject
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function getAvatarAttribute($value)
+    {
+        return asset($value ? '/storage/'.$value : '');
     }
 }

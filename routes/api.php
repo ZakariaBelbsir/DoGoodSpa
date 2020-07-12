@@ -17,6 +17,8 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+Route::put('/{user:name}/update', 'UsersController@update');
+
 Route::post('/register', 'AuthController@register');
 
 Route::get('/regions', 'RegionController@index');

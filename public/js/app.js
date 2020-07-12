@@ -2404,13 +2404,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         label: 'Inscription',
         url: '/register'
-      }]
+      }],
+      userData: null
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     'loggedIn': 'User/loggedIn',
     'user': 'User/getUser'
   })),
+  created: function created() {
+    this.userData = this.user; // if(this.user){
+    //     this.userData = this.user
+    // } else {
+    //     this.userData = JSON.parse(localStorage.getItem('user'))
+    // }
+  },
   watch: {
     group: function group() {
       this.drawer = false;
@@ -2641,6 +2649,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Profile',
   mounted: function mounted() {
+    // only reload page once
+    // if (localStorage.getItem('reloaded')) {
+    //     localStorage.removeItem('reloaded');
+    // } else {
+    //     localStorage.setItem('reloaded', '1');
+    //     location.reload();
+    // }
     axios.get('/api/posts').then(function (response) {});
   }
 });
@@ -2696,18 +2711,84 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Settings",
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['Regions', 'Cities'])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     'user': 'User/getUser'
   })),
-  mounted: function mounted() {
-    this.$store.dispatch('Regions/fetchRegions');
+  data: function data() {
+    return {
+      userData: null,
+      city: null,
+      showPassword: false,
+      oldPassword: '',
+      newPassword: '',
+      avatar: [],
+      success: '',
+      error: ''
+    };
+  },
+  created: function created() {
+    this.$store.dispatch('Regions/fetchRegions'); // if(!this.user.user){
+
+    this.userData = this.user.user; // } else {
+    //     this.userData = this.user.user
+    // }
   },
   methods: {
     getCities: function getCities(event) {
       this.$store.dispatch('Cities/fetchCities', event);
+    },
+    setCity: function setCity(event) {
+      this.city = event;
+    },
+    updateUser: function updateUser() {
+      var _this = this;
+
+      var fd = new FormData(); //check if avatar is of type file
+
+      if ('File' in window && this.avatar instanceof File) {
+        fd.append('avatar', this.avatar, this.avatar.name);
+      }
+
+      fd.append('_method', 'PUT');
+      fd.append('city_id', this.userData ? this.userData.city.id : this.city);
+      fd.append('oldPassword', this.oldPassword);
+      fd.append('newPassword', this.newPassword);
+      this.$store.dispatch('User/update', fd).then(function () {
+        _this.success = _this.user.user.message;
+      })["catch"](function (err) {
+        _this.error = err.response.data.message;
+      });
     }
   }
 });
@@ -40052,7 +40133,7 @@ var render = function() {
                             text: "",
                             to: {
                               name: "settings",
-                              params: { user: _vm.user.name }
+                              params: { user: _vm.user.user.name }
                             }
                           }
                         },
@@ -40310,7 +40391,7 @@ var render = function() {
                                         text: "",
                                         to: {
                                           name: "settings",
-                                          params: { user: _vm.user.name }
+                                          params: { user: _vm.user.user.name }
                                         }
                                       }
                                     },
@@ -40810,60 +40891,183 @@ var render = function() {
           _c(
             "v-card-text",
             [
+              _vm.success
+                ? _c(
+                    "v-alert",
+                    { attrs: { type: "success", dismissible: "" } },
+                    [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(_vm.success) +
+                          "\n            "
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.error
+                ? _c("v-alert", { attrs: { type: "error", dismissible: "" } }, [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(_vm.error) +
+                        "\n            "
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
               _c(
                 "v-form",
+                {
+                  attrs: { enctype: "multipart/form-data" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.updateUser($event)
+                    }
+                  }
+                },
                 [
                   _c("v-text-field", {
-                    attrs: { label: "Nom complet", readonly: "" },
-                    model: {
-                      value: _vm.user.name,
-                      callback: function($$v) {
-                        _vm.$set(_vm.user, "name", $$v)
-                      },
-                      expression: "user.name"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("v-text-field", {
-                    attrs: { label: "Email", readonly: "" },
-                    model: {
-                      value: _vm.user.email,
-                      callback: function($$v) {
-                        _vm.$set(_vm.user, "email", $$v)
-                      },
-                      expression: "user.email"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("v-select", {
                     attrs: {
-                      label: "Region",
-                      items: _vm.Regions.regions,
-                      "item-text": "name",
-                      "item-value": "id"
+                      label: "Nom complet",
+                      readonly: "",
+                      "prepend-icon": "mdi-account-circle"
                     },
-                    on: { change: _vm.getCities }
+                    model: {
+                      value: _vm.userData.name,
+                      callback: function($$v) {
+                        _vm.$set(_vm.userData, "name", $$v)
+                      },
+                      expression: "userData.name"
+                    }
                   }),
                   _vm._v(" "),
-                  _vm.Cities.cities.length > 0
-                    ? _c("v-select", {
-                        staticClass: "select",
-                        attrs: {
-                          label: "Villes",
-                          "item-text": "name",
-                          "item-value": "id",
-                          items: _vm.Cities.cities
-                        }
-                      })
-                    : _vm._e(),
+                  _c("v-text-field", {
+                    attrs: {
+                      label: "Email",
+                      readonly: "",
+                      "prepend-icon": "mdi-email"
+                    },
+                    model: {
+                      value: _vm.userData.email,
+                      callback: function($$v) {
+                        _vm.$set(_vm.userData, "email", $$v)
+                      },
+                      expression: "userData.email"
+                    }
+                  }),
                   _vm._v(" "),
-                  _c("v-text-field", { attrs: { label: "Mot de passe" } }),
+                  _c("v-file-input", {
+                    attrs: { label: "Avatar" },
+                    model: {
+                      value: _vm.avatar,
+                      callback: function($$v) {
+                        _vm.avatar = $$v
+                      },
+                      expression: "avatar"
+                    }
+                  }),
+                  _vm._v(" "),
+                  !_vm.userData.city_id
+                    ? [
+                        _c("v-select", {
+                          attrs: {
+                            label: "Region",
+                            items: _vm.Regions.regions,
+                            "item-text": "name",
+                            "item-value": "id"
+                          },
+                          on: { change: _vm.getCities }
+                        }),
+                        _vm._v(" "),
+                        _vm.Cities.cities.length > 0
+                          ? _c("v-select", {
+                              staticClass: "select",
+                              attrs: {
+                                label: "Villes",
+                                "item-text": "name",
+                                "item-value": "id",
+                                items: _vm.Cities.cities
+                              },
+                              on: { change: _vm.setCity }
+                            })
+                          : _vm._e()
+                      ]
+                    : _c("v-text-field", {
+                        attrs: {
+                          label: "Ville",
+                          readonly: "",
+                          "prepend-icon": "mdi-map"
+                        },
+                        model: {
+                          value: _vm.userData.city.name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.userData.city, "name", $$v)
+                          },
+                          expression: "userData.city.name"
+                        }
+                      }),
                   _vm._v(" "),
                   _c("v-text-field", {
-                    attrs: { label: "Confirmez le mot de passe" }
-                  })
+                    attrs: {
+                      label: "Ancien mot de passe",
+                      type: _vm.showPassword ? "text" : "password",
+                      "prepend-icon": "mdi-lock",
+                      "append-icon": _vm.showPassword
+                        ? "mdi-eye"
+                        : "mdi-eye-off"
+                    },
+                    on: {
+                      "click:append": function($event) {
+                        _vm.showPassword = !_vm.showPassword
+                      }
+                    },
+                    model: {
+                      value: _vm.oldPassword,
+                      callback: function($$v) {
+                        _vm.oldPassword = $$v
+                      },
+                      expression: "oldPassword"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      label: "Nouveau mot de passe",
+                      type: _vm.showPassword ? "text" : "password",
+                      "prepend-icon": "mdi-lock",
+                      "append-icon": _vm.showPassword
+                        ? "mdi-eye"
+                        : "mdi-eye-off"
+                    },
+                    on: {
+                      "click:append": function($event) {
+                        _vm.showPassword = !_vm.showPassword
+                      }
+                    },
+                    model: {
+                      value: _vm.newPassword,
+                      callback: function($$v) {
+                        _vm.newPassword = $$v
+                      },
+                      expression: "newPassword"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        type: "",
+                        rounded: "",
+                        text: "",
+                        color: "success"
+                      }
+                    },
+                    [_vm._v("Mettre a jour")]
+                  )
                 ],
-                1
+                2
               )
             ],
             1
@@ -100077,6 +100281,13 @@ var mutations = {
   CLEAR_USER_DATA: function CLEAR_USER_DATA() {
     localStorage.removeItem('user');
     location.reload();
+  },
+  UPDATE_USER_DATA: function UPDATE_USER_DATA(state, userData) {
+    var user = localStorage.getItem('user');
+    var data = JSON.parse(user);
+    state.user.user = userData;
+    data['user'] = userData;
+    localStorage.setItem('user', JSON.stringify(data));
   }
 };
 var actions = {
@@ -100105,6 +100316,13 @@ var actions = {
         commit('CLEAR_USER_DATA');
       });
     }
+  },
+  update: function update(_ref6, user) {
+    var commit = _ref6.commit;
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/".concat(user.name, "/update"), user).then(function (_ref7) {
+      var data = _ref7.data;
+      commit('UPDATE_USER_DATA', data);
+    });
   }
 };
 var getters = {
@@ -100112,7 +100330,7 @@ var getters = {
     return !!state.user;
   },
   getUser: function getUser(state) {
-    return state.user.user;
+    return state.user;
   }
 };
 

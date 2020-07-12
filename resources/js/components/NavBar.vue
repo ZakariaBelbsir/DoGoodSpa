@@ -28,7 +28,7 @@
                     <v-btn rounded text to="/postes">
                         Postes
                     </v-btn>
-                    <v-btn rounded text :to="{name: 'settings', params: {user: user.name}}">
+                    <v-btn rounded text :to="{name: 'settings', params: {user: user.user.name}}">
                         Parametres
                     </v-btn>
                     <v-btn rounded text @click="logout">
@@ -94,7 +94,7 @@
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text"  rounded text :to="{name: 'settings', params: {user: user.name}}">Parametres</v-btn>
+                                <v-btn class="white--text"  rounded text :to="{name: 'settings', params: {user: user.user.name}}">Parametres</v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -127,7 +127,8 @@
                     {label: 'Postes', url:'/postes'},
                     {label: 'Connexion', url: '/login'},
                     {label: 'Inscription', url: '/register'},
-                ]
+                ],
+                userData: null
             }
         },
 
@@ -135,6 +136,14 @@
             ...mapGetters({'loggedIn' : 'User/loggedIn', 'user' : 'User/getUser'})
         },
 
+        created(){
+            this.userData = this.user
+            // if(this.user){
+            //     this.userData = this.user
+            // } else {
+            //     this.userData = JSON.parse(localStorage.getItem('user'))
+            // }
+        },
         watch: {
             group () {
                 this.drawer = false

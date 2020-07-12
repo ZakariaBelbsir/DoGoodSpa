@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistrationFormRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use App\User;
@@ -50,7 +51,7 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        $user->password = Hash::make($request->password);
         $user->save();
 
         if ($this->loginAfterSignUp) {

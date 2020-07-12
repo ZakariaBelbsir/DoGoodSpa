@@ -8,10 +8,17 @@ export const mutations = {
         state.user = userData
         localStorage.setItem('user', JSON.stringify(userData))
         axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`
-    },
+        },
     CLEAR_USER_DATA () {
         localStorage.removeItem('user')
         location.reload()
+    },
+    UPDATE_USER_DATA(state, userData){
+        let user = localStorage.getItem('user')
+        const data = JSON.parse(user)
+        state.user.user = userData
+        data['user'] = userData
+        localStorage.setItem('user', JSON.stringify(data))
     }
 }
 export const actions = {
@@ -37,6 +44,12 @@ export const actions = {
                 commit('CLEAR_USER_DATA')
             })
         }
+    },
+    update({commit}, user){
+        return axios.post(`/api/${user.name}/update`, user)
+            .then(( {data} ) => {
+                commit('UPDATE_USER_DATA', data)
+            })
     }
 }
 
@@ -45,6 +58,6 @@ export const getters = {
             return !!state.user
         },
         getUser (state) {
-            return state.user.user
+            return state.user
         }
     }
