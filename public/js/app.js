@@ -2413,11 +2413,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     'user': 'User/getUser'
   })),
   created: function created() {
-    this.userData = this.user; // if(this.user){
-    //     this.userData = this.user
-    // } else {
-    //     this.userData = JSON.parse(localStorage.getItem('user'))
-    // }
+    if (this.user) {
+      this.userData = this.user;
+    } else {
+      this.userData = null;
+    }
   },
   watch: {
     group: function group() {
@@ -2743,7 +2743,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Settings",
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['Regions', 'Cities'])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
-    'user': 'User/getUser'
+    'user': 'User/getUser',
+    'success': 'User/getMessage'
   })),
   data: function data() {
     return {
@@ -2753,16 +2754,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       oldPassword: '',
       newPassword: '',
       avatar: [],
-      success: '',
       error: ''
     };
   },
   created: function created() {
-    this.$store.dispatch('Regions/fetchRegions'); // if(!this.user.user){
-
-    this.userData = this.user.user; // } else {
-    //     this.userData = this.user.user
-    // }
+    this.$store.dispatch('Regions/fetchRegions');
+    this.userData = this.user;
   },
   methods: {
     getCities: function getCities(event) {
@@ -2784,13 +2781,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       fd.append('city_id', this.userData ? this.userData.city.id : this.city);
       fd.append('oldPassword', this.oldPassword);
       fd.append('newPassword', this.newPassword);
-      this.$store.dispatch('User/update', fd).then(function () {
-        _this.success = _this.user.user.message;
-      })["catch"](function (err) {
+      fd.append('user', this.userData.name);
+      this.$store.dispatch('User/update', fd) // .then(() =>{
+      // this.userData = this.user
+      // console.log(this.userData)
+      // })
+      ["catch"](function (err) {
         _this.error = err.response.data.message;
       });
     }
-  }
+  } // FIX MISSING PARAM AFTER UPDATE
+  // BUG ONLY HAPPENS WHEN UPDATE IS SUCCESSFUL
+
 });
 
 /***/ }),
@@ -40133,7 +40135,7 @@ var render = function() {
                             text: "",
                             to: {
                               name: "settings",
-                              params: { user: _vm.user.user.name }
+                              params: { user: _vm.user.name }
                             }
                           }
                         },
@@ -40391,7 +40393,7 @@ var render = function() {
                                         text: "",
                                         to: {
                                           name: "settings",
-                                          params: { user: _vm.user.user.name }
+                                          params: { user: _vm.user.name }
                                         }
                                       }
                                     },
@@ -100270,7 +100272,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var namespaced = true;
 var state = {
-  user: null
+  user: null,
+  message: ''
 };
 var mutations = {
   SET_USER_DATA: function SET_USER_DATA(state, userData) {
@@ -100283,11 +100286,9 @@ var mutations = {
     location.reload();
   },
   UPDATE_USER_DATA: function UPDATE_USER_DATA(state, userData) {
-    var user = localStorage.getItem('user');
-    var data = JSON.parse(user);
-    state.user.user = userData;
-    data['user'] = userData;
-    localStorage.setItem('user', JSON.stringify(data));
+    state.user.user = userData.user;
+    state.message = userData.message;
+    localStorage.setItem('user', JSON.stringify(state.user));
   }
 };
 var actions = {
@@ -100319,8 +100320,9 @@ var actions = {
   },
   update: function update(_ref6, user) {
     var commit = _ref6.commit;
-    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/".concat(user.name, "/update"), user).then(function (_ref7) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/".concat(user.get('user'), "/update"), user).then(function (_ref7) {
       var data = _ref7.data;
+      // console.log(data)
       commit('UPDATE_USER_DATA', data);
     });
   }
@@ -100330,7 +100332,10 @@ var getters = {
     return !!state.user;
   },
   getUser: function getUser(state) {
-    return state.user;
+    return state.user.user;
+  },
+  getMessage: function getMessage(state) {
+    return state.message;
   }
 };
 

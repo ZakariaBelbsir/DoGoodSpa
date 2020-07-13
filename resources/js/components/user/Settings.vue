@@ -66,7 +66,7 @@
         name: "Settings",
         computed: {
             ...mapState(['Regions', 'Cities']),
-            ...mapGetters({'user' : 'User/getUser'})
+            ...mapGetters({'user' : 'User/getUser', 'success':'User/getMessage'})
         },
         data(){
             return{
@@ -76,19 +76,13 @@
                 oldPassword: '',
                 newPassword: '',
                 avatar: [],
-                success: '',
                 error: ''
             }
         },
 
         created() {
             this.$store.dispatch('Regions/fetchRegions')
-            // if(!this.user.user){
-                this.userData = this.user.user
-            // } else {
-            //     this.userData = this.user.user
-            // }
-
+            this.userData = this.user
         },
 
         methods:{
@@ -110,15 +104,21 @@
                 fd.append('city_id', this.userData? this.userData.city.id:this.city)
                 fd.append('oldPassword', this.oldPassword)
                 fd.append('newPassword', this.newPassword)
+                fd.append('user', this.userData.name)
 
                 this.$store.dispatch('User/update', fd)
-                    .then(() =>{
-                      this.success = this.user.user.message
-                    }).catch(err => {
+                    // .then(() =>{
+                        // this.userData = this.user
+                        // console.log(this.userData)
+                    // })
+                    .catch(err => {
                     this.error = err.response.data.message
                 })
             }
         }
+
+        // FIX MISSING PARAM AFTER UPDATE
+        // BUG ONLY HAPPENS WHEN UPDATE IS SUCCESSFUL
     }
 </script>
 

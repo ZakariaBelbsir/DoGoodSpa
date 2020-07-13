@@ -2,6 +2,7 @@ import axios from 'axios'
 export const namespaced = true
 export const state = {
     user: null,
+    message: ''
 }
 export const mutations = {
     SET_USER_DATA (state, userData) {
@@ -14,11 +15,9 @@ export const mutations = {
         location.reload()
     },
     UPDATE_USER_DATA(state, userData){
-        let user = localStorage.getItem('user')
-        const data = JSON.parse(user)
-        state.user.user = userData
-        data['user'] = userData
-        localStorage.setItem('user', JSON.stringify(data))
+        state.user.user = userData.user
+        state.message = userData.message
+        localStorage.setItem('user', JSON.stringify(state.user))
     }
 }
 export const actions = {
@@ -46,8 +45,9 @@ export const actions = {
         }
     },
     update({commit}, user){
-        return axios.post(`/api/${user.name}/update`, user)
+        return axios.post(`/api/${user.get('user')}/update`, user)
             .then(( {data} ) => {
+                // console.log(data)
                 commit('UPDATE_USER_DATA', data)
             })
     }
@@ -58,6 +58,9 @@ export const getters = {
             return !!state.user
         },
         getUser (state) {
-            return state.user
+            return state.user.user
+        },
+        getMessage(state){
+            return state.message
         }
     }

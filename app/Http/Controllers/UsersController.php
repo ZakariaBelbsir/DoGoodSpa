@@ -28,7 +28,7 @@ class UsersController extends Controller
             ], 200);
     }
 
-    public function update(Request $request)
+    public function update(User $user, Request $request)
     {
         $attributes = [];
         if(request('city_id') && $request['city_id'] !== null){
@@ -37,14 +37,12 @@ class UsersController extends Controller
         if (request('oldPassword') &&  Hash::check($request['oldPassword'], auth()->user()->getAuthPassword())
         ){
             if(request('newPassword')) {
-                $password = Hash::make($request['newPassword']);
-                $attributes['password'] = $password;
+                $attributes['password'] = Hash::make($request['newPassword']);
             }
         } else{
             return response()->json([
                 'message' => "L'ancien mot de passe est incorrecte.",
-
-                'user' => auth()->user()
+//                'user' => $user
             ], 400);
         }
 
@@ -53,17 +51,17 @@ class UsersController extends Controller
         }
 
         if (!empty($attributes)){
-            if(auth()->user()->update($attributes)){
+            if($user->update($attributes)){
                 return response()->json([
-                'user' => auth()->user(),
+                'user' => $user,
                 'message' => 'Votre compte a été modifié avec succés'
-                ]);
+                ], 200);
             }
         }
 
         return response()->json([
             'message' => "Votre compte n'a pas été modifié, réessayez plus tard",
-            'user' => auth()->user()
+//            'user' => $user
         ], 400);
     }
 }
