@@ -56,8 +56,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(City::class);
     }
 
-    public function getAvatarAttribute($value)
+    public function post()
     {
-        return asset($value ? '/storage/'.$value : '');
+        return $this->hasMany(Post::class);
     }
 }

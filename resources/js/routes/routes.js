@@ -4,6 +4,8 @@ import Home from '../components/Home';
 import Login from '../components/Login';
 import Register from '../components/Register';
 import Posts from '../components/Posts';
+import showPost from '../components/showPost';
+
 import Profile from '../components/user/Profile';
 import Settings from '../components/user/Settings';
 
@@ -33,6 +35,11 @@ const router = new VueRouter({
             path: '/postes',
             name: 'Postes',
             component: Posts
+        },
+        {
+            path: '/postes/:id',
+            name: 'showPost',
+            component: showPost
         },
         {
             path: '/profile',

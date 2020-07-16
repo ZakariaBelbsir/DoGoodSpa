@@ -22,18 +22,39 @@
                     <v-btn rounded text to="/">
                         Acceuil
                     </v-btn>
-                    <v-btn rounded text to="/profile">
-                        Profil
-                    </v-btn>
                     <v-btn rounded text to="/postes">
                         Postes
                     </v-btn>
-                    <v-btn rounded text :to="{name: 'settings', params: {user: user.name}}">
-                        Parametres
-                    </v-btn>
-                    <v-btn rounded text @click="logout">
-                        Deconnexion
-                    </v-btn>
+                    <v-menu rounded offset-y>
+                        <template v-slot:activator="{attrs, on}">
+                            <v-btn rounded text v-bind="attrs" v-on="on">
+                                <v-avatar height="50" width="40">
+                                    <v-img :src="user.avatar"></v-img>
+                                </v-avatar>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item link>
+                                <v-list-item-title>
+                                    <v-btn rounded text to="/profile">
+                                         <v-icon>mdi-account</v-icon> Profil</v-btn>
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item link>
+                                <v-list-item-title>
+                                    <v-btn rounded text :to="{name: 'settings', params: {user: user.name}}">
+                                        <v-icon>mdi-account-cog-outline</v-icon> Paramètres
+                                    </v-btn>
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item link>
+                                <v-list-item-title>
+                                    <v-btn rounded text @click="logout">
+                                        <v-icon>mdi-logout</v-icon> Déconnexion</v-btn>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                 </div>
             </v-row>
         </v-app-bar>
@@ -73,35 +94,50 @@
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text" to="/" rounded text>Acceuil</v-btn>
+                                <v-btn class="white--text" to="/" rounded text>
+                                    <v-icon>mdi-home</v-icon>
+                                    Acceuil
+                                </v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text" to="/profile" rounded text>Profil</v-btn>
+                                <v-btn class="white--text" to="/profile" rounded text>
+                                    <v-avatar height="50" width="80">
+                                        <v-img :src="user.avatar"></v-img>
+                                    </v-avatar>
+                                    Profil
+                                </v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text" to="/postes" rounded text>Postes</v-btn>
+                                <v-btn class="white--text" to="/postes" rounded text>
+                                    <v-icon>mdi-post-outline</v-icon>
+                                    Postes
+                                </v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text"  rounded text :to="{name: 'settings', params: {user: user.name}}">Parametres</v-btn>
+                                <v-btn class="white--text"  rounded text :to="{name: 'settings', params: {user: user.name}}">
+                                    <v-icon>mdi-account-cog-outline</v-icon> Parametres
+                                </v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text"  rounded text @click="logout">Deconnexion</v-btn>
+                                <v-btn class="white--text"  rounded text @click="logout">
+                                    <v-icon>mdi-logout</v-icon> Deconnexion
+                                </v-btn>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -136,14 +172,14 @@
             ...mapGetters({'loggedIn' : 'User/loggedIn', 'user' : 'User/getUser'})
         },
 
-        created(){
-            if(this.user){
-                this.userData = this.user
-            } else {
-                this.userData = null
-            }
-
-        },
+        // created(){
+        //     if(this.user){
+        //         this.userData = this.user
+        //     } else {
+        //         this.userData = null
+        //     }
+        //
+        // },
         watch: {
             group () {
                 this.drawer = false

@@ -13,11 +13,11 @@ Route::prefix('auth')->group(function () {
 
     Route::group(['middleware' => 'auth.jwt'], function(){
         Route::get('user', 'AuthController@user');
+        Route::put('/{user:name}/update', 'UsersController@update');
         Route::post('logout', 'AuthController@logout');
     });
 });
 
-Route::put('/{user:name}/update', 'UsersController@update');
 
 Route::post('/register', 'AuthController@register');
 
@@ -25,3 +25,4 @@ Route::get('/regions', 'RegionController@index');
 Route::get('/cities/{region_id}', 'CityController@index');
 
 Route::get('/posts', 'PostController@index');
+Route::get('/posts/{post}', 'PostController@show');

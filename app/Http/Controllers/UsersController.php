@@ -42,12 +42,14 @@ class UsersController extends Controller
         } else{
             return response()->json([
                 'message' => "L'ancien mot de passe est incorrecte.",
-//                'user' => $user
             ], 400);
         }
 
         if (request('avatar')) {
-            $attributes['avatar'] = request('avatar')->store('avatars');
+            $file = $request->file('avatar');
+            $name = '/avatars/' . uniqid() . '.' . $file->extension();
+            $file->storePubliclyAs('public', $name);
+            $attributes['avatar'] = $name;
         }
 
         if (!empty($attributes)){
@@ -61,7 +63,6 @@ class UsersController extends Controller
 
         return response()->json([
             'message' => "Votre compte n'a pas été modifié, réessayez plus tard",
-//            'user' => $user
         ], 400);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -12,26 +13,29 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->user = \JWTAuth::parseToken()->authenticate();
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        dd(auth()->user()->name);
+        $this->middleware('auth.jwt')->except(['index', 'show']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function index()
     {
-        //
+        $posts = Post::all();
+        return response()->json([
+            'posts' => $posts
+        ]);
+    }
+
+
+    public function authenticated_user_posts($id)
+    {
+        $authPosts = User::find($id)->post;
+        return response()->json([
+            'authPosts' => $authPosts
+        ]);
+    }
+
+    public function posts_by_city()
+    {
+
     }
 
     /**
@@ -49,11 +53,13 @@ class PostController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Post $post)
     {
-        //
+        return response()->json([
+            'post' => $post
+        ]);
     }
 
     /**

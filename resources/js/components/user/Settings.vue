@@ -2,10 +2,10 @@
     <v-content>
         <v-card>
             <v-card-title>
-                Modifiez vos donnees personnelles
+                Modifiez vos données personnelles
             </v-card-title>
             <v-card-text>
-                <v-alert type="success" v-if="success" dismissible>
+                <v-alert type="success" v-if="message" dismissible>
                     {{success}}
                 </v-alert>
                 <v-alert type="error" v-if="error" dismissible>
@@ -20,7 +20,7 @@
                                   prepend-icon="mdi-email"/>
                     <v-file-input label="Avatar" v-model="avatar" />
                     <template v-if="!userData.city_id">
-                        <v-select label="Region"
+                        <v-select label="Région"
                                   :items="Regions.regions"
                                   @change="getCities"
                                   item-text="name"
@@ -51,7 +51,7 @@
                                   prepend-icon="mdi-lock"
                                   :append-icon="showPassword? 'mdi-eye' : 'mdi-eye-off'"
                                   @click:append="showPassword = !showPassword"/>
-                    <v-btn type rounded text color="success">Mettre a jour</v-btn>
+                    <v-btn type rounded color="success">Mettre a jour</v-btn>
                 </v-form>
 
             </v-card-text>
@@ -76,7 +76,8 @@
                 oldPassword: '',
                 newPassword: '',
                 avatar: [],
-                error: ''
+                error: '',
+                message: ''
             }
         },
 
@@ -107,18 +108,16 @@
                 fd.append('user', this.userData.name)
 
                 this.$store.dispatch('User/update', fd)
-                    // .then(() =>{
-                        // this.userData = this.user
-                        // console.log(this.userData)
-                    // })
+                    .then(() => {
+                        this.message = this.success
+                        setTimeout(() =>{this.message = ''}, 5000)
+                    })
                     .catch(err => {
-                    this.error = err.response.data.message
+                        this.error = err.response.data.message
+                        setTimeout(() =>{this.error = ''}, 5000)
                 })
             }
         }
-
-        // FIX MISSING PARAM AFTER UPDATE
-        // BUG ONLY HAPPENS WHEN UPDATE IS SUCCESSFUL
     }
 </script>
 

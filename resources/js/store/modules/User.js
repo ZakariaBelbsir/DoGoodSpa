@@ -45,9 +45,8 @@ export const actions = {
         }
     },
     update({commit}, user){
-        return axios.post(`/api/${user.get('user')}/update`, user)
+        return axios.post(`/api/auth/${user.get('user')}/update`, user)
             .then(( {data} ) => {
-                // console.log(data)
                 commit('UPDATE_USER_DATA', data)
             })
     }

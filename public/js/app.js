@@ -2385,6 +2385,42 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2412,13 +2448,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     'loggedIn': 'User/loggedIn',
     'user': 'User/getUser'
   })),
-  created: function created() {
-    if (this.user) {
-      this.userData = this.user;
-    } else {
-      this.userData = null;
-    }
-  },
+  // created(){
+  //     if(this.user){
+  //         this.userData = this.user
+  //     } else {
+  //         this.userData = null
+  //     }
+  //
+  // },
   watch: {
     group: function group() {
       this.drawer = false;
@@ -2453,11 +2490,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      posts: null
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    axios.get('/api/posts').then(function (response) {
+      _this.posts = response.data;
+    })["catch"](function (e) {
+      return console.log(e);
+    });
+  },
+  methods: {
+    showPost: function showPost(id) {
+      this.$router.push({
+        name: 'showPost',
+        params: {
+          id: id
+        }
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -2632,6 +2690,42 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/showPost.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/showPost.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "showPost",
+  data: function data() {
+    return {
+      post: null
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get("/api/posts/".concat(this.$route.params.id)).then(function (response) {
+      _this.post = response.data.post;
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/Profile.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/Profile.vue?vue&type=script&lang=js& ***!
@@ -2754,7 +2848,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       oldPassword: '',
       newPassword: '',
       avatar: [],
-      error: ''
+      error: '',
+      message: ''
     };
   },
   created: function created() {
@@ -2782,17 +2877,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       fd.append('oldPassword', this.oldPassword);
       fd.append('newPassword', this.newPassword);
       fd.append('user', this.userData.name);
-      this.$store.dispatch('User/update', fd) // .then(() =>{
-      // this.userData = this.user
-      // console.log(this.userData)
-      // })
-      ["catch"](function (err) {
+      this.$store.dispatch('User/update', fd).then(function () {
+        _this.message = _this.success;
+        setTimeout(function () {
+          _this.message = '';
+        }, 5000);
+      })["catch"](function (err) {
         _this.error = err.response.data.message;
+        setTimeout(function () {
+          _this.error = '';
+        }, 5000);
       });
     }
-  } // FIX MISSING PARAM AFTER UPDATE
-  // BUG ONLY HAPPENS WHEN UPDATE IS SUCCESSFUL
-
+  }
 });
 
 /***/ }),
@@ -40109,16 +40206,6 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "v-btn",
-                        { attrs: { rounded: "", text: "", to: "/profile" } },
-                        [
-                          _vm._v(
-                            "\n                    Profil\n                "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
                         { attrs: { rounded: "", text: "", to: "/postes" } },
                         [
                           _vm._v(
@@ -40128,35 +40215,153 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c(
-                        "v-btn",
+                        "v-menu",
                         {
-                          attrs: {
-                            rounded: "",
-                            text: "",
-                            to: {
-                              name: "settings",
-                              params: { user: _vm.user.name }
-                            }
-                          }
+                          attrs: { rounded: "", "offset-y": "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var attrs = ref.attrs
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        _vm._b(
+                                          { attrs: { rounded: "", text: "" } },
+                                          "v-btn",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [
+                                        _c(
+                                          "v-avatar",
+                                          {
+                                            attrs: { height: "50", width: "40" }
+                                          },
+                                          [
+                                            _c("v-img", {
+                                              attrs: { src: _vm.user.avatar }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            false,
+                            2414929123
+                          )
                         },
                         [
-                          _vm._v(
-                            "\n                    Parametres\n                "
+                          _vm._v(" "),
+                          _c(
+                            "v-list",
+                            [
+                              _c(
+                                "v-list-item",
+                                { attrs: { link: "" } },
+                                [
+                                  _c(
+                                    "v-list-item-title",
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            rounded: "",
+                                            text: "",
+                                            to: "/profile"
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [_vm._v("mdi-account")]),
+                                          _vm._v(" Profil")
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-list-item",
+                                { attrs: { link: "" } },
+                                [
+                                  _c(
+                                    "v-list-item-title",
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            rounded: "",
+                                            text: "",
+                                            to: {
+                                              name: "settings",
+                                              params: { user: _vm.user.name }
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v("mdi-account-cog-outline")
+                                          ]),
+                                          _vm._v(
+                                            " Paramètres\n                                "
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-list-item",
+                                { attrs: { link: "" } },
+                                [
+                                  _c(
+                                    "v-list-item-title",
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { rounded: "", text: "" },
+                                          on: { click: _vm.logout }
+                                        },
+                                        [
+                                          _c("v-icon", [_vm._v("mdi-logout")]),
+                                          _vm._v(" Déconnexion")
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
                           )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: { rounded: "", text: "" },
-                          on: { click: _vm.logout }
-                        },
-                        [
-                          _vm._v(
-                            "\n                    Deconnexion\n                "
-                          )
-                        ]
+                        ],
+                        1
                       )
                     ],
                     1
@@ -40298,7 +40503,13 @@ var render = function() {
                                       staticClass: "white--text",
                                       attrs: { to: "/", rounded: "", text: "" }
                                     },
-                                    [_vm._v("Acceuil")]
+                                    [
+                                      _c("v-icon", [_vm._v("mdi-home")]),
+                                      _vm._v(
+                                        "\n                                Acceuil\n                            "
+                                      )
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -40330,7 +40541,24 @@ var render = function() {
                                         text: ""
                                       }
                                     },
-                                    [_vm._v("Profil")]
+                                    [
+                                      _c(
+                                        "v-avatar",
+                                        {
+                                          attrs: { height: "50", width: "80" }
+                                        },
+                                        [
+                                          _c("v-img", {
+                                            attrs: { src: _vm.user.avatar }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(
+                                        "\n                                Profil\n                            "
+                                      )
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -40362,7 +40590,15 @@ var render = function() {
                                         text: ""
                                       }
                                     },
-                                    [_vm._v("Postes")]
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v("mdi-post-outline")
+                                      ]),
+                                      _vm._v(
+                                        "\n                                Postes\n                            "
+                                      )
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -40397,7 +40633,15 @@ var render = function() {
                                         }
                                       }
                                     },
-                                    [_vm._v("Parametres")]
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v("mdi-account-cog-outline")
+                                      ]),
+                                      _vm._v(
+                                        " Parametres\n                            "
+                                      )
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -40426,7 +40670,13 @@ var render = function() {
                                       attrs: { rounded: "", text: "" },
                                       on: { click: _vm.logout }
                                     },
-                                    [_vm._v("Deconnexion")]
+                                    [
+                                      _c("v-icon", [_vm._v("mdi-logout")]),
+                                      _vm._v(
+                                        " Deconnexion\n                            "
+                                      )
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -40475,23 +40725,31 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "v-content",
-    [
-      _c(
+    _vm._l(_vm.posts, function(post) {
+      return _c(
         "v-card",
+        {
+          key: post.id,
+          on: {
+            click: function($event) {
+              return _vm.showPost(post[0].id)
+            }
+          }
+        },
         [
-          _c("v-card-title", [_vm._v("Post Title")]),
+          _c("v-card-title", [_vm._v(_vm._s(post[0].title))]),
           _vm._v(" "),
           _c("v-card-text", [
-            _c("p", [
-              _vm._v(
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab sequi a suscipit praesentium aut quidem perspiciatis perferendis eum ipsum quae temporibus consequatur repudiandae natus, fuga, maiores repellat excepturi obcaecati molestias?\n            Totam mollitia magni tempore minima! Nulla dignissimos consequuntur illo tempore, dolore culpa excepturi aspernatur, id expedita voluptatem eos molestiae adipisci vero iure a magni voluptatibus quis labore fugit sunt modi!\n            Nostrum aliquam quibusdam cumque quas minus voluptatem fuga. Eius, tenetur? Veniam assumenda dolore animi? Voluptate officia inventore commodi, natus, qui maiores harum nulla rem unde expedita recusandae labore molestiae sit!\n            Officiis esse distinctio possimus labore quibusdam vero est facere, accusantium non numquam placeat praesentium dolorem cum quaerat eligendi similique dicta corporis aut. Tenetur laborum similique sint doloribus voluptate vitae minima!\n            Quis aliquam beatae amet nesciunt, soluta explicabo totam neque et esse eum impedit fugiat suscipit cumque culpa distinctio modi magni minima nulla iste optio at voluptates vero. Tempora, repellendus perspiciatis?"
-              )
-            ])
+            _vm._v(
+              "\n            " +
+                _vm._s(post[0].body.substring(0, 50)) +
+                "...\n        "
+            )
           ])
         ],
         1
       )
-    ],
+    }),
     1
   )
 }
@@ -40841,6 +41099,46 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-content",
+    [
+      _vm.post
+        ? _c(
+            "v-card",
+            [
+              _c("v-card-title", [_vm._v(_vm._s(_vm.post.title))]),
+              _vm._v(" "),
+              _c("v-card-text", [_vm._v(_vm._s(_vm.post.body))])
+            ],
+            1
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/Profile.vue?vue&type=template&id=3cba5490&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/Profile.vue?vue&type=template&id=3cba5490& ***!
@@ -40887,13 +41185,13 @@ var render = function() {
         "v-card",
         [
           _c("v-card-title", [
-            _vm._v("\n            Modifiez vos donnees personnelles\n        ")
+            _vm._v("\n            Modifiez vos données personnelles\n        ")
           ]),
           _vm._v(" "),
           _c(
             "v-card-text",
             [
-              _vm.success
+              _vm.message
                 ? _c(
                     "v-alert",
                     { attrs: { type: "success", dismissible: "" } },
@@ -40974,7 +41272,7 @@ var render = function() {
                     ? [
                         _c("v-select", {
                           attrs: {
-                            label: "Region",
+                            label: "Région",
                             items: _vm.Regions.regions,
                             "item-text": "name",
                             "item-value": "id"
@@ -41058,14 +41356,7 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "v-btn",
-                    {
-                      attrs: {
-                        type: "",
-                        rounded: "",
-                        text: "",
-                        color: "success"
-                      }
-                    },
+                    { attrs: { type: "", rounded: "", color: "success" } },
                     [_vm._v("Mettre a jour")]
                   )
                 ],
@@ -99967,6 +100258,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/showPost.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/components/showPost.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./showPost.vue?vue&type=template&id=0abafc08&scoped=true& */ "./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true&");
+/* harmony import */ var _showPost_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./showPost.vue?vue&type=script&lang=js& */ "./resources/js/components/showPost.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _showPost_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "0abafc08",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/showPost.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/showPost.vue?vue&type=script&lang=js&":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/showPost.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_showPost_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./showPost.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/showPost.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_showPost_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./showPost.vue?vue&type=template&id=0abafc08&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/showPost.vue?vue&type=template&id=0abafc08&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_showPost_vue_vue_type_template_id_0abafc08_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/user/Profile.vue":
 /*!**************************************************!*\
   !*** ./resources/js/components/user/Profile.vue ***!
@@ -100121,8 +100481,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Login__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Login */ "./resources/js/components/Login.vue");
 /* harmony import */ var _components_Register__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Register */ "./resources/js/components/Register.vue");
 /* harmony import */ var _components_Posts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/Posts */ "./resources/js/components/Posts.vue");
-/* harmony import */ var _components_user_Profile__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/user/Profile */ "./resources/js/components/user/Profile.vue");
-/* harmony import */ var _components_user_Settings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/user/Settings */ "./resources/js/components/user/Settings.vue");
+/* harmony import */ var _components_showPost__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/showPost */ "./resources/js/components/showPost.vue");
+/* harmony import */ var _components_user_Profile__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/user/Profile */ "./resources/js/components/user/Profile.vue");
+/* harmony import */ var _components_user_Settings__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/user/Settings */ "./resources/js/components/user/Settings.vue");
+
 
 
 
@@ -100152,16 +100514,20 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     name: 'Postes',
     component: _components_Posts__WEBPACK_IMPORTED_MODULE_5__["default"]
   }, {
+    path: '/postes/:id',
+    name: 'showPost',
+    component: _components_showPost__WEBPACK_IMPORTED_MODULE_6__["default"]
+  }, {
     path: '/profile',
     name: 'Profile',
-    component: _components_user_Profile__WEBPACK_IMPORTED_MODULE_6__["default"],
+    component: _components_user_Profile__WEBPACK_IMPORTED_MODULE_7__["default"],
     meta: {
       requiresAuth: true
     }
   }, {
     path: '/:user/settings',
     name: 'settings',
-    component: _components_user_Settings__WEBPACK_IMPORTED_MODULE_7__["default"],
+    component: _components_user_Settings__WEBPACK_IMPORTED_MODULE_8__["default"],
     meta: {
       requiresAuth: true
     }
@@ -100320,9 +100686,8 @@ var actions = {
   },
   update: function update(_ref6, user) {
     var commit = _ref6.commit;
-    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/".concat(user.get('user'), "/update"), user).then(function (_ref7) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/auth/".concat(user.get('user'), "/update"), user).then(function (_ref7) {
       var data = _ref7.data;
-      // console.log(data)
       commit('UPDATE_USER_DATA', data);
     });
   }
