@@ -5,10 +5,9 @@ import Login from '../components/Login';
 import Register from '../components/Register';
 import Posts from '../components/Posts';
 import showPost from '../components/showPost';
-
 import Profile from '../components/user/Profile';
 import Settings from '../components/user/Settings';
-
+import NotFound from '../components/NotFound.vue'
 
 Vue.use(VueRouter);
 
@@ -42,7 +41,7 @@ const router = new VueRouter({
             component: showPost
         },
         {
-            path: '/profile',
+            path: '/:user/profile',
             name: 'Profile',
             component: Profile,
             meta: {requiresAuth: true}
@@ -52,6 +51,15 @@ const router = new VueRouter({
             name: 'settings',
             component: Settings,
             meta: {requiresAuth: true}
+        },
+        {
+            path: '/404',
+            name: '404',
+            component: NotFound,
+        },
+        { // Here's the new catch all route
+            path: '*',
+            redirect: { name: '404' }
         }
      ]
 });
