@@ -60,4 +60,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Post::class);
     }
+
+    public function getAvatarAttribute($value)
+    {
+        return asset($value ? '/storage/'.$value : '');
+    }
 }

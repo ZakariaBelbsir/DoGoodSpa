@@ -69,7 +69,8 @@ export default {
                 'email' : this.email,
                 'password' : this.password
             }).then(() => {
-                this.$router.push('/profile')
+                let user = JSON.parse(localStorage.getItem('user'))
+                this.$router.push({name: 'Profile', params: {user: user.user.name}})
             }).catch(err => {
                 this.error = err.response.data.message
             })
