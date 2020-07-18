@@ -22,7 +22,7 @@
                     <v-btn rounded text to="/">
                         Acceuil
                     </v-btn>
-                    <v-btn rounded text to="/postes">
+                    <v-btn rounded text to="/postes" class="allPosts">
                         Postes
                     </v-btn>
                     <v-menu rounded offset-y>
@@ -34,9 +34,9 @@
                             </v-btn>
                         </template>
                         <v-list>
-                            <v-list-item link>
+                            <v-list-item link class="usersPosts">
                                 <v-list-item-title>
-                                    <v-btn rounded text to="/profile">
+                                    <v-btn rounded text :to="{name: 'Profile', params:{user: user.name}}">
                                          <v-icon>mdi-account</v-icon> Profil</v-btn>
                                 </v-list-item-title>
                             </v-list-item>
@@ -104,7 +104,7 @@
                     <v-list-item link>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <v-btn class="white--text" to="/profile" rounded text>
+                                <v-btn class="white--text" :to="{name: 'Profile', params:{user: user.name}}" rounded text>
                                     <v-avatar height="50" width="80">
                                         <v-img :src="user.avatar"></v-img>
                                     </v-avatar>
@@ -164,7 +164,6 @@
                     {label: 'Connexion', url: '/login'},
                     {label: 'Inscription', url: '/register'},
                 ],
-                userData: null
             }
         },
 
@@ -172,14 +171,6 @@
             ...mapGetters({'loggedIn' : 'User/loggedIn', 'user' : 'User/getUser'})
         },
 
-        // created(){
-        //     if(this.user){
-        //         this.userData = this.user
-        //     } else {
-        //         this.userData = null
-        //     }
-        //
-        // },
         watch: {
             group () {
                 this.drawer = false
@@ -190,6 +181,7 @@
             logout(){
                 this.$store.dispatch('User/logout')
             }
-        }
+        },
+
 }
 </script>

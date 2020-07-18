@@ -3,11 +3,13 @@ import VueRouter from "vue-router";
 import Home from '../components/Home';
 import Login from '../components/Login';
 import Register from '../components/Register';
-import Posts from '../components/Posts';
-import showPost from '../components/showPost';
+import NotFound from '../components/NotFound.vue';
 import Profile from '../components/user/Profile';
 import Settings from '../components/user/Settings';
-import NotFound from '../components/NotFound.vue'
+import Posts from '../components/Posts/Posts';
+import showPost from '../components/Posts/showPost';
+import CityPosts from "../components/Posts/CityPosts";
+import UserPosts from "../components/Posts/UserPosts";
 
 Vue.use(VueRouter);
 
@@ -51,6 +53,16 @@ const router = new VueRouter({
             name: 'settings',
             component: Settings,
             meta: {requiresAuth: true}
+        },
+        {
+          path: '/:city/posts',
+          name: 'CityPosts',
+          component: CityPosts
+        },
+        {
+            path: '/:user/posts',
+            name: 'UserPosts',
+            component: UserPosts
         },
         {
             path: '/404',

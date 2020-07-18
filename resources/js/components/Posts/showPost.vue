@@ -1,14 +1,14 @@
 <template>
-    <v-content>
+    <v-main>
         <v-card v-if="post">
             <v-card-title>
                 <h3>{{post.title}}</h3>
                 <v-spacer></v-spacer>
-                <p>created by <router-link :to="{name: 'userProfile', params:{id: post.user.id}}">{{post.user.name}}</router-link></p>
+                <p>created by {{post.user.name}}</p>
             </v-card-title>
             <v-card-text>{{post.body}}</v-card-text>
         </v-card>
-    </v-content>
+    </v-main>
 </template>
 
 <script>

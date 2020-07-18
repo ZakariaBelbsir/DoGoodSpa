@@ -1,9 +1,13 @@
 <template>
-    <v-content>
-        <h1 class="text-h1">404 NOT FOUND</h1>
-        <h1 clqss="text-h3">Oops! On dirait que vous êtes perdu...</h1>
-        <v-btn :to="{ name: 'Home' }">Revenir vers la page d'acceuil</v-btn>
-    </v-content>
+    <v-main>
+        <div class="d-flex justify-center">
+                <h1 class="red--text">404 PAGE INTROUVABLE</h1>
+        </div>
+        <div class="d-flex justify-center align-center">
+            <h3 class="red--text">Oops! On dirait que vous êtes perdu...</h3>
+            <v-btn to="/" text color="teal" rounded>Revenir vers la page d'acceuil</v-btn>
+        </div>
+    </v-main>
 </template>
 
 <script>

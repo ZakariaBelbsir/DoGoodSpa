@@ -13,7 +13,7 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth.jwt')->except(['index', 'show']);
+        $this->middleware('auth.jwt')->except(['index', 'show', 'postsByCity']);
     }
 
     public function index()
@@ -25,17 +25,27 @@ class PostController extends Controller
     }
 
 
-    public function authenticated_user_posts($id)
+    public function authenticated_user_posts()
     {
-        $authPosts = User::find($id)->post;
+        $authPosts = auth()->user()->post;
         return response()->json([
             'authPosts' => $authPosts
         ]);
     }
 
-    public function posts_by_city()
+    public function postsByCity($city_id)
     {
-
+        $posts = [];
+        $users = User::where('city_id', $city_id)->get();
+        foreach ($users as $user){
+            $userPost = $user->post;
+            if(!empty($userPost)) {
+                array_push($posts, $userPost);
+            }
+        }
+        return response()->json([
+            'posts' => $posts
+        ]);
     }
 
     /**

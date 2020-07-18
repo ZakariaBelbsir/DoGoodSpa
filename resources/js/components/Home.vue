@@ -1,5 +1,5 @@
 <template>
-    <v-content>
+    <v-main>
         <v-img :src="require('../assets/solidarity.jpg')" min-height="100vh" max-height="200vh" class="d-flex justify-center elevation-6">
             <v-row justify="center" align="center" v-if="!loggedIn">
                 <v-col cols="12" lg="3" class="text-center">
@@ -21,7 +21,7 @@
                 </v-col>
             </v-row>
         </v-img>
-    </v-content>
+    </v-main>
 </template>
 
 <script>
@@ -35,11 +35,11 @@
             Authentication
         },
         data: () => ({
-            dialog: false
+            dialog: false,
         }),
         computed: {
             ...mapGetters({'loggedIn' : 'User/loggedIn'})
-        }
+        },
     }
 </script>
 

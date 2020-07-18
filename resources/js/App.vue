@@ -3,7 +3,7 @@
         <NavBar></NavBar>
         <v-container fluid>
             <router-view></router-view>
-        </v-container>    
+        </v-container>
     </v-app>
 </template>
 
@@ -13,6 +13,5 @@
         components:{
             NavBar,
         }
-        
     }
 </script>

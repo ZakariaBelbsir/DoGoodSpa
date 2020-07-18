@@ -1,5 +1,5 @@
 <template>
-    <v-content>
+    <v-main>
         <v-container>
             <v-row class="elevation-12">
                 <v-col cols="12" md="4" class="green accent-3">
@@ -61,7 +61,7 @@
                 </v-col>
             </v-row>
         </v-container>
-    </v-content>
+    </v-main>
 </template>
 <script>
 export default {

@@ -1,12 +1,12 @@
 <template>
-    <v-content>
+    <v-main>
         <v-card v-for="post in posts" :key="post.id" @click="showPost(post[0].id)">
             <v-card-title>{{post[0].title}}</v-card-title>
             <v-card-text>
                 {{post[0].body.substring(0,50)}}...
             </v-card-text>
         </v-card>
-    </v-content>
+    </v-main>
 </template>
 
 <script>

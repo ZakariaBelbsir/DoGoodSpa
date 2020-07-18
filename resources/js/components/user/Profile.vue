@@ -1,21 +1,19 @@
 <template>
-    <v-content>
+    <v-main>
         <h1>Dashboard</h1>
-    </v-content>
+    </v-main>
 </template>
 <script>
     export default {
         name: 'Profile',
+        data(){
+            return{
+                id: 36
+            }
+        },
         mounted() {
-            // only reload page once
-            // if (localStorage.getItem('reloaded')) {
-            //     localStorage.removeItem('reloaded');
-            // } else {
-            //     localStorage.setItem('reloaded', '1');
-            //     location.reload();
-            // }
-            axios.get('/api/posts').then(response => {
-
+            axios.get(`/api/posts/city/${this.id}`).then(response => {
+                console.log(response)
             })
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <v-content>
+    <v-main>
         <v-card>
             <v-card-title>
                 Modifiez vos données personnelles
@@ -56,7 +56,7 @@
 
             </v-card-text>
         </v-card>
-    </v-content>
+    </v-main>
 </template>
 
 <script>
