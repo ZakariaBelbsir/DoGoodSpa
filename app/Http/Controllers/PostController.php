@@ -18,18 +18,16 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::all();
         return response()->json([
-            'posts' => $posts
+            'posts' => Post::all()
         ]);
     }
 
 
     public function AuthPosts()
     {
-        $authPosts = auth()->user()->post;
         return response()->json([
-            'authPosts' => $authPosts
+            'authPosts' => auth()->user()->post
         ]);
     }
 
@@ -52,11 +50,21 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        $post = $request->validate([
+            'title' => 'required',
+            'body' => 'required|min:150'
+        ]);
+
+        $post['user_id'] = auth()->id();
+
+        Post::create($post);
+        return response()->json([
+            'message' => 'Votre poste a été crée avec succés'
+        ]);
     }
 
     /**
@@ -70,17 +78,6 @@ class PostController extends Controller
         return response()->json([
             'post' => $post
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        //
     }
 
     /**

@@ -11,51 +11,53 @@
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <v-card v-for="post in Posts" :key="post.id" class="mt-10">
-            <v-card-title @click="showPost(post[0].id)" class="cardTitle">{{post[0].title}}</v-card-title>
-            <v-card-text>{{post[0].body.substring(0,50)}}...</v-card-text>
-            <v-card-actions absolute top right>
-                <v-speed-dial
-                    v-model="fab"
-                    top
-                    right
-                    absolute
-                    direction="left"
-                    open-on-hover="true"
-                    transition="slide-y-reverse-transition"
-                >
-                    <template v-slot:activator>
+        <div v-for="(posts, index) in Posts" :key="index">
+            <v-card v-for="post in posts" :key="post.id" class="mt-10">
+                <v-card-title @click="showPost(post.id)" class="cardTitle">{{post.title}}</v-card-title>
+                <v-card-text>{{post.body.substring(0,50)}}...</v-card-text>
+                <v-card-actions absolute top right>
+                    <v-speed-dial
+                        v-model="fab"
+                        top
+                        right
+                        absolute
+                        direction="left"
+                        :open-on-hover="true"
+                        transition="slide-y-reverse-transition"
+                    >
+                        <template v-slot:activator>
+                            <v-btn
+                                v-model="fab"
+                                color="blue darken-2"
+                                dark
+                                fab
+                            >
+                                <v-icon v-if="fab">mdi-close</v-icon>
+                                <v-icon v-else>mdi-account-circle</v-icon>
+                            </v-btn>
+                        </template>
                         <v-btn
-                            v-model="fab"
-                            color="blue darken-2"
-                            dark
                             fab
+                            dark
+                            small
+                            color="green"
+                            @click="edit(post.id)"
                         >
-                            <v-icon v-if="fab">mdi-close</v-icon>
-                            <v-icon v-else>mdi-account-circle</v-icon>
+                            <v-icon>mdi-pencil</v-icon>
                         </v-btn>
-                    </template>
-                    <v-btn
-                        fab
-                        dark
-                        small
-                        color="green"
-                        @click="edit(post[0].id)"
-                    >
-                        <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn
-                        fab
-                        dark
-                        small
-                        color="red"
-                        @click="deletePost(post[0].id)"
-                    >
-                        <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                </v-speed-dial>
-            </v-card-actions>
-        </v-card>
+                        <v-btn
+                            fab
+                            dark
+                            small
+                            color="red"
+                            @click="deletePost(post.id)"
+                        >
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </v-speed-dial>
+                </v-card-actions>
+            </v-card>
+        </div>
     </v-main>
 </template>
 <script>
@@ -63,15 +65,19 @@
     export default {
         name: 'Profile',
         computed: {
-            ...mapGetters({'User' : 'User/getUser', 'Posts': 'Posts/getAuthPosts'})
+            ...mapGetters({'User' : 'User/getUser'})
         },
         data(){
           return {
-              fab: false
+              fab: false,
+              Posts: null
           }
         },
         mounted() {
-            this.$store.dispatch('Posts/fetchUserPosts', this.User.id)
+            axios.get(`/api/${this.User.id}/posts`).then((response) => {
+                this.Posts = response.data
+                console.log(this.posts)
+            }).catch(err => console.log(err))
         },
         methods:{
             showPost(id){
@@ -84,7 +90,7 @@
                 this.$router.push({name:'AddPost'})
             },
             deletePost(post){
-                this.$store.dispatch('Posts/deletePost', post)
+                axios.delete('/api/posts', post)
             }
         }
     }

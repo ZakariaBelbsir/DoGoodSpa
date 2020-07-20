@@ -10,6 +10,7 @@ import Posts from '../components/Posts/Posts';
 import showPost from '../components/Posts/showPost';
 import CityPosts from "../components/Posts/CityPosts";
 import UserPosts from "../components/Posts/UserPosts";
+import AddPost from "../components/Posts/AddPost";
 
 Vue.use(VueRouter);
 
@@ -41,6 +42,11 @@ const router = new VueRouter({
             path: '/postes/:id',
             name: 'showPost',
             component: showPost
+        },
+        {
+            path: '/add/postes',
+            name: 'AddPost',
+            component: AddPost
         },
         {
             path: '/:user/profile',

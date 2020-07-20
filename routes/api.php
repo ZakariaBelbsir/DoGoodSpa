@@ -28,3 +28,4 @@ Route::get('/posts', 'PostController@index');
 Route::get('/posts/{post}', 'PostController@show');
 Route::get('/posts/city/{city_id}', 'PostController@PostsByCity');
 Route::get('/{user}/posts', 'PostController@AuthPosts');
+Route::post('/posts', 'PostController@store');

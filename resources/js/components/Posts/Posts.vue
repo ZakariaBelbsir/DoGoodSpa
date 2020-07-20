@@ -1,11 +1,13 @@
 <template>
     <v-main>
-        <v-card v-for="post in posts" :key="post.id" @click="showPost(post[0].id)">
-            <v-card-title>{{post[0].title}}</v-card-title>
-            <v-card-text>
-                {{post[0].body.substring(0,50)}}...
-            </v-card-text>
-        </v-card>
+        <div v-for="(posts, index) in Posts" :key="index">
+            <v-card v-for="post in posts" :key="post.id" @click="showPost(post.id)" class="my-5">
+                <v-card-title>{{post.title}}</v-card-title>
+                <v-card-text>
+                    {{post.body.substring(0,50)}}...
+                </v-card-text>
+            </v-card>
+        </div>
     </v-main>
 </template>
 
@@ -13,12 +15,12 @@
 export default {
     data(){
         return {
-            posts: null
+            Posts: null
         }
     },
     created() {
         axios.get('/api/posts').then(response => {
-            this.posts = response.data
+            this.Posts = response.data
         }).catch(e => console.log(e))
     },
     methods:{
