@@ -11,7 +11,7 @@
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <div v-for="(posts, index) in Posts" :key="index">
+        <div v-for="(posts, index) in Posts" :key="index" v-if="Posts.length > 0">
             <v-card v-for="post in posts" :key="post.id" class="mt-10">
                 <v-card-title @click="showPost(post.id)" class="cardTitle">{{post.title}}</v-card-title>
                 <v-card-text>{{post.body.substring(0,50)}}...</v-card-text>
@@ -58,6 +58,15 @@
                 </v-card-actions>
             </v-card>
         </div>
+        <div v-else class="text-h3 text-center grey--text">
+            Vous n'avez aucun poste pour le moment.
+        </div>
+        <v-alert type="success" v-if="message" dismissible>
+            {{message}}
+        </v-alert>
+        <v-alert type="error" v-if="error" dismissible>
+            {{error}}
+        </v-alert>
     </v-main>
 </template>
 <script>
@@ -70,16 +79,20 @@
         data(){
           return {
               fab: false,
-              Posts: null
+              Posts: null,
+              message: '',
+              error: ''
           }
         },
         mounted() {
-            axios.get(`/api/${this.User.id}/posts`).then((response) => {
-                this.Posts = response.data
-                console.log(this.posts)
-            }).catch(err => console.log(err))
+           this.fetchPosts()
         },
         methods:{
+            fetchPosts(){
+                axios.get(`/api/${this.User.id}/posts`).then((response) => {
+                    this.Posts = response.data
+                }).catch(err => console.log(err))
+            },
             showPost(id){
                 this.$router.push({name: 'showPost', params:{id: id}})
             },
@@ -90,7 +103,15 @@
                 this.$router.push({name:'AddPost'})
             },
             deletePost(post){
-                axios.delete('/api/posts', post)
+                axios.delete(`/api/posts/${post}`).then((response) => {
+                    this.message = response.data.message
+                    this.fetchPosts()
+                    console.log(this.message)
+                    setTimeout(() =>{this.message = ''}, 5000)
+                }).catch(err => {
+                    this.error = err.response.data.message
+                    setTimeout(() =>{this.error = ''}, 5000)
+                })
             }
         }
     }

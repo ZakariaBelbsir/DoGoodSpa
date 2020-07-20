@@ -2518,54 +2518,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "AddPost",
-  data: function data() {
-    return {
-      title: '',
-      body: ''
-    };
-  },
-  methods: {
-    addPost: function addPost() {
-      axios.post('/api/posts', {
-        'title': this.title,
-        'body': this.body
-      }).then(function (response) {
-        console.log(response);
-      })["catch"](function (err) {
-        return console.log(err.response.data.errors);
-      });
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Posts/CityPosts.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Posts/CityPosts.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -2582,14 +2534,89 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "CityPosts",
+  name: "AddPost",
+  data: function data() {
+    return {
+      title: '',
+      body: '',
+      errors: null
+    };
+  },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
-    'posts': 'Posts/getPosts'
+    'user': 'User/getUser'
   })),
+  methods: {
+    addPost: function addPost() {
+      var _this = this;
+
+      axios.post('/api/posts', {
+        'title': this.title,
+        'body': this.body
+      }).then(function () {
+        _this.$router.push({
+          name: 'Profile',
+          params: {
+            user: _this.user.id
+          }
+        });
+      })["catch"](function (err) {
+        return _this.errors = err.response.data.errors;
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Posts/CityPosts.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Posts/CityPosts.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "CityPosts",
+  data: function data() {
+    return {
+      Posts: null
+    };
+  },
   mounted: function mounted() {
-    this.$store.dispatch('Posts/fetchAllPosts');
+    var _this = this;
+
+    axios.get("/api/posts/city/".concat(this.$route.params.city)).then(function (response) {
+      _this.Posts = response.data;
+      console.log(response.data);
+    })["catch"](function (err) {
+      return console.log(err);
+    });
   },
   methods: {
     showPost: function showPost(id) {
@@ -2995,6 +3022,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Profile',
@@ -3004,20 +3040,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       fab: false,
-      Posts: null
+      Posts: null,
+      message: '',
+      error: ''
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
-    axios.get("/api/".concat(this.User.id, "/posts")).then(function (response) {
-      _this.Posts = response.data;
-      console.log(_this.posts);
-    })["catch"](function (err) {
-      return console.log(err);
-    });
+    this.fetchPosts();
   },
   methods: {
+    fetchPosts: function fetchPosts() {
+      var _this = this;
+
+      axios.get("/api/".concat(this.User.id, "/posts")).then(function (response) {
+        _this.Posts = response.data;
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
     showPost: function showPost(id) {
       this.$router.push({
         name: 'showPost',
@@ -3040,7 +3080,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     deletePost: function deletePost(post) {
-      axios["delete"]('/api/posts', post);
+      var _this2 = this;
+
+      axios["delete"]("/api/posts/".concat(post)).then(function (response) {
+        _this2.message = response.data.message;
+
+        _this2.fetchPosts();
+
+        console.log(_this2.message);
+        setTimeout(function () {
+          _this2.message = '';
+        }, 5000);
+      })["catch"](function (err) {
+        _this2.error = err.response.data.message;
+        setTimeout(function () {
+          _this2.error = '';
+        }, 5000);
+      });
     }
   }
 });
@@ -41187,7 +41243,26 @@ var render = function() {
               )
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _vm.errors
+            ? _c(
+                "v-list",
+                _vm._l(_vm.errors, function(error, index) {
+                  return _c(
+                    "v-list-item",
+                    { key: index },
+                    [
+                      _c("v-list-item-title", { staticClass: "red--text" }, [
+                        _vm._v(_vm._s(error[0]))
+                      ])
+                    ],
+                    1
+                  )
+                }),
+                1
+              )
+            : _vm._e()
         ],
         1
       )
@@ -41219,30 +41294,38 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "v-main",
-    _vm._l(_vm.posts, function(post) {
-      return _vm.posts
-        ? _c(
-            "v-card",
-            {
-              key: post.id,
-              on: {
-                click: function($event) {
-                  return _vm.showPost(post[0].id)
-                }
-              }
-            },
-            [
-              _c("v-card-title", [_vm._v(_vm._s(post[0].title))]),
-              _vm._v(" "),
-              _c("v-card-text", [
-                _vm._v(_vm._s(post[0].body.substring(0, 50)) + "...")
-              ])
-            ],
-            1
-          )
-        : _vm._e()
+    _vm._l(_vm.Posts, function(posts, index) {
+      return _c(
+        "div",
+        { key: index },
+        _vm._l(posts, function(post) {
+          return posts
+            ? _c(
+                "v-card",
+                {
+                  key: post.id,
+                  staticClass: "mt-5",
+                  on: {
+                    click: function($event) {
+                      return _vm.showPost(post.id)
+                    }
+                  }
+                },
+                [
+                  _c("v-card-title", [_vm._v(_vm._s(post.title))]),
+                  _vm._v(" "),
+                  _c("v-card-text", [
+                    _vm._v(_vm._s(post.body.substring(0, 50)) + "...")
+                  ])
+                ],
+                1
+              )
+            : _vm._e()
+        }),
+        1
+      )
     }),
-    1
+    0
   )
 }
 var staticRenderFns = []
@@ -41803,130 +41886,136 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm._l(_vm.Posts, function(posts, index) {
-        return _c(
-          "div",
-          { key: index },
-          _vm._l(posts, function(post) {
-            return _c(
-              "v-card",
-              { key: post.id, staticClass: "mt-10" },
-              [
-                _c(
-                  "v-card-title",
-                  {
-                    staticClass: "cardTitle",
-                    on: {
-                      click: function($event) {
-                        return _vm.showPost(post.id)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(post.title))]
-                ),
-                _vm._v(" "),
-                _c("v-card-text", [
-                  _vm._v(_vm._s(post.body.substring(0, 50)) + "...")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "v-card-actions",
-                  { attrs: { absolute: "", top: "", right: "" } },
+        return _vm.Posts.length > 0
+          ? _c(
+              "div",
+              { key: index },
+              _vm._l(posts, function(post) {
+                return _c(
+                  "v-card",
+                  { key: post.id, staticClass: "mt-10" },
                   [
                     _c(
-                      "v-speed-dial",
+                      "v-card-title",
                       {
-                        attrs: {
-                          top: "",
-                          right: "",
-                          absolute: "",
-                          direction: "left",
-                          "open-on-hover": true,
-                          transition: "slide-y-reverse-transition"
-                        },
-                        scopedSlots: _vm._u(
-                          [
-                            {
-                              key: "activator",
-                              fn: function() {
-                                return [
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      attrs: {
-                                        color: "blue darken-2",
-                                        dark: "",
-                                        fab: ""
-                                      },
-                                      model: {
-                                        value: _vm.fab,
-                                        callback: function($$v) {
-                                          _vm.fab = $$v
-                                        },
-                                        expression: "fab"
-                                      }
-                                    },
-                                    [
-                                      _vm.fab
-                                        ? _c("v-icon", [_vm._v("mdi-close")])
-                                        : _c("v-icon", [
-                                            _vm._v("mdi-account-circle")
-                                          ])
-                                    ],
-                                    1
-                                  )
-                                ]
-                              },
-                              proxy: true
-                            }
-                          ],
-                          null,
-                          true
-                        ),
-                        model: {
-                          value: _vm.fab,
-                          callback: function($$v) {
-                            _vm.fab = $$v
-                          },
-                          expression: "fab"
+                        staticClass: "cardTitle",
+                        on: {
+                          click: function($event) {
+                            return _vm.showPost(post.id)
+                          }
                         }
                       },
+                      [_vm._v(_vm._s(post.title))]
+                    ),
+                    _vm._v(" "),
+                    _c("v-card-text", [
+                      _vm._v(_vm._s(post.body.substring(0, 50)) + "...")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "v-card-actions",
+                      { attrs: { absolute: "", top: "", right: "" } },
                       [
-                        _vm._v(" "),
                         _c(
-                          "v-btn",
+                          "v-speed-dial",
                           {
                             attrs: {
-                              fab: "",
-                              dark: "",
-                              small: "",
-                              color: "green"
+                              top: "",
+                              right: "",
+                              absolute: "",
+                              direction: "left",
+                              "open-on-hover": true,
+                              transition: "slide-y-reverse-transition"
                             },
-                            on: {
-                              click: function($event) {
-                                return _vm.edit(post.id)
-                              }
+                            scopedSlots: _vm._u(
+                              [
+                                {
+                                  key: "activator",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "blue darken-2",
+                                            dark: "",
+                                            fab: ""
+                                          },
+                                          model: {
+                                            value: _vm.fab,
+                                            callback: function($$v) {
+                                              _vm.fab = $$v
+                                            },
+                                            expression: "fab"
+                                          }
+                                        },
+                                        [
+                                          _vm.fab
+                                            ? _c("v-icon", [
+                                                _vm._v("mdi-close")
+                                              ])
+                                            : _c("v-icon", [
+                                                _vm._v("mdi-account-circle")
+                                              ])
+                                        ],
+                                        1
+                                      )
+                                    ]
+                                  },
+                                  proxy: true
+                                }
+                              ],
+                              null,
+                              true
+                            ),
+                            model: {
+                              value: _vm.fab,
+                              callback: function($$v) {
+                                _vm.fab = $$v
+                              },
+                              expression: "fab"
                             }
                           },
-                          [_c("v-icon", [_vm._v("mdi-pencil")])],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "v-btn",
-                          {
-                            attrs: {
-                              fab: "",
-                              dark: "",
-                              small: "",
-                              color: "red"
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.deletePost(post.id)
-                              }
-                            }
-                          },
-                          [_c("v-icon", [_vm._v("mdi-delete")])],
+                          [
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  fab: "",
+                                  dark: "",
+                                  small: "",
+                                  color: "green"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.edit(post.id)
+                                  }
+                                }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-pencil")])],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  fab: "",
+                                  dark: "",
+                                  small: "",
+                                  color: "red"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deletePost(post.id)
+                                  }
+                                }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-delete")])],
+                              1
+                            )
+                          ],
                           1
                         )
                       ],
@@ -41935,13 +42024,25 @@ var render = function() {
                   ],
                   1
                 )
-              ],
+              }),
               1
             )
-          }),
-          1
-        )
-      })
+          : _c("div", { staticClass: "text-h3 text-center grey--text" }, [
+              _vm._v("\n        Vous n'avez aucun poste pour le moment.\n    ")
+            ])
+      }),
+      _vm._v(" "),
+      _vm.message
+        ? _c("v-alert", { attrs: { type: "success", dismissible: "" } }, [
+            _vm._v("\n        " + _vm._s(_vm.message) + "\n    ")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.error
+        ? _c("v-alert", { attrs: { type: "error", dismissible: "" } }, [
+            _vm._v("\n        " + _vm._s(_vm.error) + "\n    ")
+          ])
+        : _vm._e()
     ],
     2
   )

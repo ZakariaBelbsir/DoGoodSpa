@@ -42,7 +42,7 @@ class PostController extends Controller
             }
         }
         return response()->json([
-            'posts' => $posts
+            'posts' => $posts[0]
         ]);
     }
 
@@ -96,10 +96,17 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function destroy(Post $post)
     {
-        //
+        if($post->delete()){
+            return response()->json([
+                'message' => 'Poste supprimé avec succés'
+            ]);
+        }
+      return response()->json([
+          'message' => 'Un problème est survenu lors de la suppression de ce poste'
+      ]);
     }
 }

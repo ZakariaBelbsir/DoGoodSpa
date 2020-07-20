@@ -1,21 +1,27 @@
 <template>
     <v-main>
-        <v-card v-for="post in posts" :key="post.id" v-if="posts" @click="showPost(post[0].id)">
-            <v-card-title>{{post[0].title}}</v-card-title>
-            <v-card-text>{{post[0].body.substring(0,50)}}...</v-card-text>
-        </v-card>
+        <div v-for="(posts, index) in Posts" :key="index">
+            <v-card v-for="post in posts" :key="post.id" v-if="posts" @click="showPost(post.id)" class="mt-5">
+                <v-card-title>{{post.title}}</v-card-title>
+                <v-card-text>{{post.body.substring(0,50)}}...</v-card-text>
+            </v-card>
+        </div>
     </v-main>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
     export default {
         name: "CityPosts",
-       computed: {
-            ...mapGetters({'posts' : 'Posts/getPosts'})
-       },
+        data(){
+            return {
+                Posts: null
+            }
+        },
         mounted() {
-            this.$store.dispatch('Posts/fetchAllPosts')
+            axios.get(`/api/posts/city/${this.$route.params.city}`).then((response) =>{
+                this.Posts = response.data
+                console.log(response.data)
+            }).catch(err => console.log(err))
         },
         methods:{
             showPost(id){
