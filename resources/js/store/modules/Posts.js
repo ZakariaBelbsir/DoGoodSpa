@@ -23,7 +23,7 @@ export const actions = {
         });
     },
     fetchUserPosts({commit}, user){
-        return axios.get(`/posts/${user}/posts`).then(({data}) => {
+        return axios.get(`/api/${user}/posts`).then(({data}) => {
             commit('SET_AUTH_POSTS', data)
         });
     },

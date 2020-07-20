@@ -26,4 +26,5 @@ Route::get('/cities/{region_id}', 'CityController@index');
 
 Route::get('/posts', 'PostController@index');
 Route::get('/posts/{post}', 'PostController@show');
-Route::get('/posts/city/{city_id}', 'PostController@postsByCity');
+Route::get('/posts/city/{city_id}', 'PostController@PostsByCity');
+Route::get('/{user}/posts', 'PostController@AuthPosts');
